@@ -20,8 +20,8 @@ I might add some new plugins in the future
 
 ## Installation 
 ```bash
-git clone --depth 1 https://github.com/enzzzh/nvim-config.git
-cd nvim-config
+git clone --depth 1 https://github.com/enzzzh/nvim.git
+cd nvim
 sudo cp -r nvim ~/.config
 rm -fr .git
 nvim
