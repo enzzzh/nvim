@@ -1,5 +1,12 @@
 local builtin = require('telescope.builtin')
-requires = {{'nvim-lua/plenary.nvim'}}
+require("telescope").setup({
+  defaults = {
+    preview = {
+      treesitter = false,
+    },
+  },
+})
+
 -- Project Files (find_files)
 vim.keymap.set('n', '<leader>f', builtin.find_files, {}) 
 -- Git Files (only searches files tracked by git)

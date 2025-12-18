@@ -33,7 +33,6 @@ require('mason-lspconfig').setup({
         'lua_ls', -- For Lua/Neovim config
         'pyright', -- For Python
         'rust_analyzer', -- For Rust
-        'tsserver', -- For TypeScript/JavaScript
     },
 
     -- This handler automatically sets up any installed server using nvim-lspconfig
