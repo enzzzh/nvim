@@ -7,12 +7,20 @@ return require('packer').startup(function(use)
     		requires = { {'nvim-lua/plenary.nvim'} }
 	}
 
+--	use({
+--	  'rose-pine/nvim',
+--	  as = 'rose-pine',
+--	  config = function()
+--	  vim.cmd('colorscheme rose-pine')	  
+--	  end
+--	})
+
 	use({
-	  'rose-pine/nvim',
-	  as = 'rose-pine',
-	  config = function()
-	  vim.cmd('colorscheme rose-pine')	  
-	  end
+		"bluz71/vim-moonfly-colors",
+		as = "moonfly",
+		config = function()
+		vim.cmd('colorscheme moonfly')
+		end
 	})
 
 	use ('nvim-treesitter/nvim-treesitter', {run = ':TSUpdate'})
