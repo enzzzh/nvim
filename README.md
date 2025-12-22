@@ -19,6 +19,15 @@ I might add some new plugins in the future
 
 
 ## Installation 
+First, let's back up your old configs : 
+```bash
+sudo mv ~/.config/nvim ~/Documents/nvim_config_if_anything_goes_wrong
+```
+Install packer.nvim to your system : 
+```bash
+git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim
+```
+Now clone the config to your nvim config
 ```bash
 git clone --depth 1 https://github.com/enzzzh/nvim.git
 cd nvim
@@ -30,6 +39,5 @@ After this you should be in the neovim config.
 When you are in nvim, Type 
 ```bash
   :PackerSync
-  :lua ColorMyPencils()
 ```
 This should sync and install all the packages on your system
