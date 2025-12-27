@@ -6,4 +6,4 @@ vim.api.nvim_create_autocmd("VimEnter", {
   pattern = "*",
   command = "lua ColorMyPencils()",
 })
-
+vim.opt.clickboard = "unamedplus"
