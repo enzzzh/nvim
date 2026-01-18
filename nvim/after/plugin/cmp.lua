@@ -23,5 +23,6 @@ cmp.setup({
         { name = 'nvim_lsp' }, -- LSP source
         { name = 'luasnip' },  -- Snippet source
         { name = 'buffer' },   -- Current buffer words
+        { name = 'path' },     -- Path source
     })
 })

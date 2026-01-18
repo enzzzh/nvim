@@ -1,5 +1,30 @@
 local lspconfig = require('lspconfig')
 
+-- Diagnostic signs
+local signs = { Error = " ", Warn = " ", Hint = "💡", Info = " " }
+for type, icon in pairs(signs) do
+  local hl = "DiagnosticSign" .. type
+  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
+end
+
+vim.diagnostic.config({
+  virtual_text = true,
+  signs = {
+    active = signs,
+  },
+  update_in_insert = true,
+  underline = true,
+  severity_sort = true,
+  float = {
+    focusable = false,
+    style = "minimal",
+    border = "rounded",
+    source = "always",
+    header = "",
+    prefix = "",
+  },
+})
+
 -- This hook is called when a language server attaches to a buffer.
 local on_attach = function(client, bufnr)
     -- OPTIONAL: Add common keymaps here.
@@ -29,10 +54,10 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities()
 -- 3. Setup mason-lspconfig
 require('mason-lspconfig').setup({
     -- This array specifies the LSPs to install and set up automatically.
-    ensure_installed = { 
-        'lua_ls', -- For Lua/Neovim config
-        'pyright', -- For Python
-        'rust_analyzer', -- For Rust
+    ensure_installed = {
+        'lua_ls',
+        'pyright',
+        'rust_analyzer',
     },
 
     -- This handler automatically sets up any installed server using nvim-lspconfig
@@ -55,9 +80,43 @@ require('mason-lspconfig').setup({
                             globals = { 'vim' },
                         },
                         workspace = {
-                            library = {
-                                [vim.fn.expand('$VIMRUNTIME/lua')] = true,
-                                [vim.fn.stdpath('data') .. '/lazy/mason/packages/lua-language-server/share/runtime-lsp/library'] = true,
+                            library = vim.api.nvim_get_runtime_file("", true),
+                        },
+                    },
+                },
+            })
+        end,
+        pyright = function()
+            lspconfig.pyright.setup({
+                on_attach = on_attach,
+                capabilities = capabilities,
+                settings = {
+                    python = {
+                        analysis = {
+                            inlayHints = {
+                                functionReturnTypes = true,
+                            },
+                        },
+                    },
+                },
+            })
+        end,
+        rust_analyzer = function()
+            lspconfig.rust_analyzer.setup({
+                on_attach = on_attach,
+                capabilities = capabilities,
+                settings = {
+                    ["rust-analyzer"] = {
+                        inlayHints = {
+                            parameterHints = {
+                                enable = true,
+                            },
+                            chainingHints = {
+                                enable = true,
+                            },
+                            closingBraceHints = {
+                                enable = true,
+                                minLines = 25,
                             },
                         },
                     },

@@ -10,7 +10,7 @@ require("telescope").setup({
 -- Project Files (find_files)
 vim.keymap.set('n', '<leader>f', builtin.find_files, {}) 
 -- Git Files (only searches files tracked by git)
-vim.keymap.set('n', '<C-p>', builtin.git_files, {})
+vim.keymap.set('n', '<leader>gf', builtin.git_files, {})
 
 -- Project Search (grep_string with user input)
 vim.keymap.set('n', '<leader>ps', function()

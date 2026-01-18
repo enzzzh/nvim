@@ -1,9 +1,5 @@
 vim.opt.clipboard = "unnamedplus"
 require ("plugin.remap")
-require ("plugin.color")
+require ("core.colors").set_colorscheme()
 require ("plugin.packer")
 vim.opt.swapfile = false
-vim.api.nvim_create_autocmd("VimEnter", {
-  pattern = "*",
-  command = "lua ColorMyPencils()",
-})
