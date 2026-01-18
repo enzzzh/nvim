@@ -14,4 +14,4 @@ formatter.setup({
   }
 })
 
-vim.api.nvim_set_keymap("n", "<leader>f", ":Format<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<leader>cf", ":Format<CR>", { noremap = true, silent = true })

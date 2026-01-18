@@ -2,6 +2,10 @@
 local cmp = require('cmp')
 local luasnip = require('luasnip')
 
+-- LuaSnip setup
+luasnip.config.setup({})
+require("luasnip.loaders.from_vscode").load({ paths = { vim.fn.stdpath("config") .. "/snippets" } })
+
 cmp.setup({
     snippet = {
         expand = function(args)

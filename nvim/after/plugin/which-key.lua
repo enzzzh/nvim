@@ -18,7 +18,7 @@ which_key.setup({
       g = true,
     },
   },
-  window = {
+  win = {
     border = "rounded",
     position = "bottom",
     margin = { 1, 0, 1, 0 },
@@ -26,21 +26,21 @@ which_key.setup({
   },
 })
 
-local mappings = {
-  ["<leader>"] = {
-    e = { name = "NvimTree" },
-    f = { name = "Format" },
-    ps = { name = "Project Search" },
-    gf = { name = "Git Files" },
-    a = { name = "Harpoon Add" },
-    u = { name = "UndoTree" },
-    ls = { name = "Live Server Start" },
-    lS = { name = "Live Server Stop" },
-    ["/"] = { name = "ToggleTerm" },
-    v = {
-        c = {a = "Code Action"}
-    },
-  },
-}
-
-which_key.register(mappings)
+which_key.register({
+    { "<leader>/", group = "ToggleTerm" },
+    { "<leader>a", group = "Harpoon Add" },
+    { "<leader>e", group = "NvimTree" },
+    { "<leader>cf", group = "Format" }, -- Updated to <leader>cf as per earlier fix
+    { "<leader>gf", group = "Git Files" },
+    { "<leader>lS", group = "Live Server Stop" },
+    { "<leader>ls", group = "Live Server Start" },
+    { "<leader>ps", group = "Project Search" },
+    { "<leader>u", group = "UndoTree" },
+    { "<leader>vca", desc = "Code Action" },
+    -- Harpoon nav keys (added as per earlier fix)
+    { "<leader>ht", group = "Harpoon Toggle" },
+    { "<leader>h1", group = "Harpoon Nav 1" },
+    { "<leader>h2", group = "Harpoon Nav 2" },
+    { "<leader>h3", group = "Harpoon Nav 3" },
+    { "<leader>h4", group = "Harpoon Nav 4" },
+})

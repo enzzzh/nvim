@@ -20,17 +20,11 @@ return require('packer').startup(function(use)
     use {
         'rose-pine/nvim',
         as = 'rose-pine',
-        config = function()
-            vim.cmd('colorscheme rose-pine')
-        end
     }
 
     use {
         'bluz71/vim-moonfly-colors',
         as = 'moonfly',
-        config = function()
-            vim.cmd('colorscheme moonfly')
-        end
     }
 
     use {
@@ -59,6 +53,8 @@ return require('packer').startup(function(use)
         'nvim-tree/nvim-web-devicons',
     }
 
+    use { 'echasnovski/mini.icons' }
+
     use {
         'nvim-tree/nvim-tree.lua',
         requires = { 'nvim-tree/nvim-web-devicons' }
@@ -72,6 +68,7 @@ return require('packer').startup(function(use)
     use { 'folke/which-key.nvim' }
     use { 'mfussenegger/nvim-lint' }
     use { 'mhartington/formatter.nvim' }
+    use { 'numToStr/Comment.nvim' }
     use { 'L3MON4D3/LuaSnip' }
 
     use {
