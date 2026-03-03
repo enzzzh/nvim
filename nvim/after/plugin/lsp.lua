@@ -9,9 +9,7 @@ end
 
 vim.diagnostic.config({
   virtual_text = true,
-  signs = {
-    active = signs,
-  },
+  signs = true,
   update_in_insert = true,
   underline = true,
   severity_sort = true,
@@ -25,42 +23,32 @@ vim.diagnostic.config({
   },
 })
 
--- This hook is called when a language server attaches to a buffer.
 local on_attach = function(client, bufnr)
-    -- OPTIONAL: Add common keymaps here.
-    -- The 'opts' ensures the keymaps are local to the current buffer (bufnr)
     local opts = { noremap = true, silent = true, buffer = bufnr }
 
-    -- Keymaps for LSP functions (use your preferred keymaps)
-    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)       -- Go to Definition
-    vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)             -- Show Hover Documentation
-    vim.keymap.set('n', '<leader>vca', vim.lsp.buf.code_action, opts) -- Code Action
-    vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)   -- Rename
-    vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)     -- Go to Previous Diagnostic
-    vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)     -- Go to Next Diagnostic
+    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+    vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+    vim.keymap.set('n', '<leader>vca', vim.lsp.buf.code_action, opts)
+    vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
+    vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
+    vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
 
-    -- Set omnifunc for CTRL-X CTRL-O completion
     vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
 end
 
--- 1. Setup Mason
-require('mason').setup({
-    -- Ensure Mason installs LSPs into a clean location.
-})
+require('mason').setup({})
 
--- 2. Setup nvim-cmp capabilities
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
--- 3. Setup mason-lspconfig
 require('mason-lspconfig').setup({
-    -- This array specifies the LSPs to install and set up automatically.
     ensure_installed = {
         'lua_ls',
         'pyright',
         'rust_analyzer',
     },
-
-    -- This handler automatically sets up any installed server using nvim-lspconfig
+    automatic_installation = true,
     handlers = {
         function(server_name)
             lspconfig[server_name].setup({
@@ -68,11 +56,11 @@ require('mason-lspconfig').setup({
                 capabilities = capabilities,
             })
         end,
-        -- Special handler for lua_ls to enable Neovim runtime help
         lua_ls = function()
             lspconfig.lua_ls.setup({
                 on_attach = on_attach,
                 capabilities = capabilities,
+                root_dir = lspconfig.util.root_pattern(".git", "init.lua", "lua"),
                 settings = {
                     Lua = {
                         runtime = { version = 'LuaJIT' },
@@ -80,7 +68,14 @@ require('mason-lspconfig').setup({
                             globals = { 'vim' },
                         },
                         workspace = {
-                            library = vim.api.nvim_get_runtime_file("", true),
+                            library = {
+                                [vim.fn.expand("$VIMRUNTIME/lua")] = true,
+                                [vim.fn.stdpath("config") .. "/lua"] = true,
+                            },
+                            checkThirdParty = false,
+                        },
+                        telemetry = {
+                            enable = false,
                         },
                     },
                 },
@@ -108,16 +103,9 @@ require('mason-lspconfig').setup({
                 settings = {
                     ["rust-analyzer"] = {
                         inlayHints = {
-                            parameterHints = {
-                                enable = true,
-                            },
-                            chainingHints = {
-                                enable = true,
-                            },
-                            closingBraceHints = {
-                                enable = true,
-                                minLines = 25,
-                            },
+                            parameterHints = { enable = true },
+                            chainingHints = { enable = true },
+                            closingBraceHints = { enable = true, minLines = 25 },
                         },
                     },
                 },

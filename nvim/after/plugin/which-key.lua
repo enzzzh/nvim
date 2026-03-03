@@ -1,6 +1,6 @@
-local which_key = require("which-key")
+local wk = require("which-key")
 
-which_key.setup({
+wk.setup({
   plugins = {
     marks = true,
     registers = true,
@@ -21,26 +21,29 @@ which_key.setup({
   win = {
     border = "rounded",
     position = "bottom",
-    margin = { 1, 0, 1, 0 },
-    padding = { 2, 2, 2, 2 },
   },
 })
 
-which_key.register({
-    { "<leader>/", group = "ToggleTerm" },
-    { "<leader>a", group = "Harpoon Add" },
-    { "<leader>e", group = "NvimTree" },
-    { "<leader>cf", group = "Format" }, -- Updated to <leader>cf as per earlier fix
-    { "<leader>gf", group = "Git Files" },
-    { "<leader>lS", group = "Live Server Stop" },
-    { "<leader>ls", group = "Live Server Start" },
-    { "<leader>ps", group = "Project Search" },
-    { "<leader>u", group = "UndoTree" },
-    { "<leader>vca", desc = "Code Action" },
-    -- Harpoon nav keys (added as per earlier fix)
-    { "<leader>ht", group = "Harpoon Toggle" },
-    { "<leader>h1", group = "Harpoon Nav 1" },
-    { "<leader>h2", group = "Harpoon Nav 2" },
-    { "<leader>h3", group = "Harpoon Nav 3" },
-    { "<leader>h4", group = "Harpoon Nav 4" },
+wk.add({
+  { "<leader>/", desc = "ToggleTerm" },
+  { "<leader>a", desc = "Harpoon Add" },
+  { "<leader>e", desc = "NvimTree" },
+  { "<leader>cf", desc = "Format" },
+  { "<leader>gf", desc = "Git Files" },
+  { "<leader>ps", desc = "Project Search" },
+  { "<leader>u", desc = "UndoTree" },
+  { "<leader>vca", desc = "Code Action" },
+  { "<leader>rn", desc = "Rename" },
+  
+  -- Grouped Mappings
+  { "<leader>h", group = "Harpoon" },
+  { "<leader>ht", desc = "Harpoon Toggle" },
+  { "<leader>h1", desc = "Harpoon Nav 1" },
+  { "<leader>h2", desc = "Harpoon Nav 2" },
+  { "<leader>h3", desc = "Harpoon Nav 3" },
+  { "<leader>h4", desc = "Harpoon Nav 4" },
+  
+  { "<leader>l", group = "Live Server" },
+  { "<leader>ls", desc = "Live Server Start" },
+  { "<leader>lS", desc = "Live Server Stop" },
 })
