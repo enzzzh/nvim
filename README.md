@@ -38,6 +38,6 @@ nvim
 After this you should be in the neovim config. 
 When you are in nvim, Type 
 ```bash
-  :PackerSync
+  :Lazy
 ```
 This should sync and install all the packages on your system
