@@ -1,41 +1,52 @@
 return {
-  -- lazydev
+  -- blink.cmp for autocompletion
   {
-    "folke/lazydev.nvim",
-    ft = "lua", -- only load on lua files
-    opts = {
-      library = {
-        -- See the configuration section for more details
-        -- Load luvit types when the `vim.uv` library is found
-        { path = "luvit-meta/library", words = { "vim%.uv" } },
-      },
+    "saghen/blink.cmp",
+    dependencies = {
+      "rafamadriz/friendly-snippets",
     },
+    version = "*",
+    opts = {
+      keymap = {
+        preset = "default",
+        ["<CR>"] = { "accept", "fallback" },
+        ["<C-y>"] = { "select_and_accept" },
+      },
+      appearance = {
+        use_nvim_cmp_as_default = true,
+        nerd_font_variant = "mono",
+      },
+      sources = {
+        default = { "lsp", "path", "snippets", "buffer" },
+      },
+      completion = {
+        list = {
+          selection = {
+            preselect = function(ctx) return ctx.mode ~= "cmdline" end,
+            auto_insert = true,
+          }
+        },
+        menu = { border = "rounded" },
+        documentation = { window = { border = "rounded" }, auto_show = true },
+        ghost_text = { enabled = true },
+      },
+      signature = { enabled = true, window = { border = "rounded" } },
+    },
+    opts_extend = { "sources.default" },
   },
-  { "Bilal2453/luvit-meta", lazy = true }, -- optional `vim.uv` types
 
-  -- LSP Config
+  -- lspconfig
   {
     "neovim/nvim-lspconfig",
     dependencies = {
-      "williamboman/mason.nvim",
+      "saghen/blink.cmp",
+      { "williamboman/mason.nvim", config = true },
       "williamboman/mason-lspconfig.nvim",
-      "hrsh7th/cmp-nvim-lsp",
+      "folke/lazydev.nvim",
     },
     config = function()
       local lspconfig = require("lspconfig")
-      local capabilities = require("cmp_nvim_lsp").default_capabilities()
-
-      local on_attach = function(client, bufnr)
-        local opts = { noremap = true, silent = true, buffer = bufnr }
-        vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-        vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-        vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-        vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-        vim.keymap.set("n", "<leader>vca", vim.lsp.buf.code_action, opts)
-        vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
-        vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
-        vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
-      end
+      local capabilities = require("blink.cmp").get_lsp_capabilities()
 
       -- Diagnostic signs
       local signs = { Error = " ", Warn = " ", Hint = "💡", Info = " " }
@@ -45,83 +56,79 @@ return {
       end
 
       vim.diagnostic.config({
-        virtual_text = true,
+        virtual_text = {
+          prefix = "●",
+        },
         signs = true,
-        update_in_insert = true,
+        update_in_insert = false,
         underline = true,
         severity_sort = true,
         float = {
-          focusable = false,
-          style = "minimal",
           border = "rounded",
           source = "always",
-          header = "",
-          prefix = "",
         },
       })
 
-      require("mason").setup()
+      -- LSP keymaps
+      vim.api.nvim_create_autocmd("LspAttach", {
+        callback = function(args)
+          local bufnr = args.buf
+          local map = function(keys, func, desc)
+            vim.keymap.set("n", keys, func, { buffer = bufnr, desc = "LSP: " .. desc })
+          end
+
+          map("gd", vim.lsp.buf.definition, "Goto Definition")
+          map("gr", vim.lsp.buf.references, "Goto References")
+          map("gI", vim.lsp.buf.implementation, "Goto Implementation")
+          map("gy", vim.lsp.buf.type_definition, "Type Definition")
+          map("K", vim.lsp.buf.hover, "Hover Documentation")
+          map("gK", vim.lsp.buf.signature_help, "Signature Help")
+          map("<leader>ca", vim.lsp.buf.code_action, "Code Action")
+          map("<leader>cr", vim.lsp.buf.rename, "Rename")
+          map("[d", vim.diagnostic.goto_prev, "Previous Diagnostic")
+          map("]d", vim.diagnostic.goto_next, "Next Diagnostic")
+        end,
+      })
+
+      -- Servers to install and configure
+      local servers = {
+        lua_ls = {
+          settings = {
+            Lua = {
+              workspace = { checkThirdParty = false },
+              telemetry = { enable = false },
+              diagnostics = {
+                globals = { "vim" },
+              },
+            },
+          },
+        },
+        pyright = {},
+        rust_analyzer = {},
+      }
+
       require("mason-lspconfig").setup({
-        ensure_installed = { "lua_ls", "pyright", "rust_analyzer" },
-        automatic_installation = true,
+        ensure_installed = vim.tbl_keys(servers),
         handlers = {
           function(server_name)
-            lspconfig[server_name].setup({
-              on_attach = on_attach,
-              capabilities = capabilities,
-            })
-          end,
-          ["lua_ls"] = function()
-            lspconfig.lua_ls.setup({
-              on_attach = on_attach,
-              capabilities = capabilities,
-              settings = {
-                Lua = {
-                  diagnostics = { globals = { "vim" } },
-                  workspace = { checkThirdParty = false },
-                },
-              },
-            })
+            local server_opts = servers[server_name] or {}
+            server_opts.capabilities = capabilities
+            lspconfig[server_name].setup(server_opts)
           end,
         },
       })
     end,
   },
 
-  -- Autocompletion
+  -- lazydev.nvim for Neovim Lua API
   {
-    "hrsh7th/nvim-cmp",
-    event = "InsertEnter",
-    dependencies = {
-      "hrsh7th/cmp-nvim-lsp",
-      "hrsh7th/cmp-buffer",
-      "hrsh7th/cmp-path",
-      "L3MON4D3/LuaSnip",
-      "saadparwaiz1/cmp_luasnip",
+    "folke/lazydev.nvim",
+    ft = "lua",
+    opts = {
+      library = {
+        { path = "luvit-meta/library", words = { "vim%.uv" } },
+      },
     },
-    config = function()
-      local cmp = require("cmp")
-      local luasnip = require("luasnip")
-
-      cmp.setup({
-        snippet = {
-          expand = function(args)
-            luasnip.lsp_expand(args.body)
-          end,
-        },
-        mapping = cmp.mapping.preset.insert({
-          ["<C-n>"] = cmp.mapping.select_next_item(),
-          ["<C-p>"] = cmp.mapping.select_prev_item(),
-          ["<C-y>"] = cmp.mapping.confirm({ select = true }),
-          ["<C-Space>"] = cmp.mapping.complete(),
-        }),
-        sources = cmp.config.sources({
-          { name = "nvim_lsp" },
-          { name = "luasnip" },
-          { name = "buffer" },
-          { name = "path" },
-        }),
-      })
-    end,
   },
+  { "Bilal2453/luvit-meta", lazy = true },
 }
