@@ -24,11 +24,10 @@ First, let's back up your old configs :
 sudo mv ~/.config/nvim ~/Documents/nvim_config_if_anything_goes_wrong
 ```
 Install packer.nvim to your system : 
-```bash
-git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim
-```
+
 Now clone the config to your nvim config
 ```bash
+sudo npm install -g live-server
 git clone --depth 1 https://github.com/enzzzh/nvim.git
 cd nvim
 sudo cp -r nvim ~/.config
