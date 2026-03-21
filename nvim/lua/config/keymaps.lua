@@ -1,19 +1,26 @@
 vim.g.mapleader = " "
 
-local keymap = vim.keymap
+local map = vim.keymap.set
 
--- Existing remap
-keymap.set("n", "<leader>pv", vim.cmd.Ex)
+map("n", "<leader>w", ":w<CR>")
+map("n", "<leader>q", ":q<CR>")
+map("n", "<leader>h", ":nohlsearch<CR>")
 
--- Common LazyVim-like keymaps
-keymap.set("n", "<leader>w", ":w<CR>")
-keymap.set("n", "<leader>q", ":q<CR>")
-keymap.set("n", "<leader>h", ":nohlsearch<CR>")
+map("n", "<C-d>", "<C-d>zz")
+map("n", "<C-u>", "<C-u>zz")
+map("n", "n", "nzzzv")
+map("n", "N", "Nzzzv")
 
--- Moving lines in visual mode
-keymap.set("v", "J", ":m '>+1<CR>gv=gv")
-keymap.set("v", "K", ":m '<-2<CR>gv=gv")
+map("v", "J", ":m '>+1<CR>gv=gv")
+map("v", "K", ":m '<-2<CR>gv=gv")
 
--- Keeping search results centered
-keymap.set("n", "n", "nzzzv")
-keymap.set("n", "N", "Nzzzv")
+map("n", "<leader>ts", function()
+  vim.wo.signcolumn = vim.wo.signcolumn == "yes" and "no" or "yes"
+end)
+
+map("n", "<leader>tn", function()
+  vim.wo.relativenumber = not vim.wo.relativenumber
+end)
+
+map("v", "<", "<gv")
+map("v", ">", ">gv")

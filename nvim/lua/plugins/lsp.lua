@@ -1,16 +1,12 @@
 return {
-  -- blink.cmp for autocompletion
   {
     "saghen/blink.cmp",
-    dependencies = {
-      "rafamadriz/friendly-snippets",
-    },
+    dependencies = { "rafamadriz/friendly-snippets" },
     version = "*",
     opts = {
       keymap = {
         preset = "default",
         ["<CR>"] = { "accept", "fallback" },
-        ["<C-y>"] = { "select_and_accept" },
       },
       appearance = {
         use_nvim_cmp_as_default = true,
@@ -20,22 +16,13 @@ return {
         default = { "lsp", "path", "snippets", "buffer" },
       },
       completion = {
-        list = {
-          selection = {
-            preselect = function(ctx) return ctx.mode ~= "cmdline" end,
-            auto_insert = true,
-          }
-        },
         menu = { border = "rounded" },
-        documentation = { window = { border = "rounded" }, auto_show = true },
+        documentation = { window = { border = "rounded" } },
         ghost_text = { enabled = true },
       },
       signature = { enabled = true, window = { border = "rounded" } },
     },
-    opts_extend = { "sources.default" },
   },
-
-  -- lspconfig
   {
     "neovim/nvim-lspconfig",
     dependencies = {
@@ -47,66 +34,47 @@ return {
     config = function()
       local lspconfig = require("lspconfig")
       local capabilities = require("blink.cmp").get_lsp_capabilities()
-
-      -- Diagnostic signs
-      local signs = { Error = " ", Warn = " ", Hint = "💡", Info = " " }
+      local signs = { Error = "•", Warn = "•", Hint = "•", Info = "•" }
       for type, icon in pairs(signs) do
         local hl = "DiagnosticSign" .. type
         vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
       end
-
       vim.diagnostic.config({
-        virtual_text = {
-          prefix = "●",
-        },
+        virtual_text = { prefix = "•", spacing = 4 },
         signs = true,
         update_in_insert = false,
         underline = true,
         severity_sort = true,
-        float = {
-          border = "rounded",
-          source = "always",
-        },
+        float = { border = "rounded", source = "always" },
       })
-
-      -- LSP keymaps
       vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(args)
           local bufnr = args.buf
-          local map = function(keys, func, desc)
-            vim.keymap.set("n", keys, func, { buffer = bufnr, desc = "LSP: " .. desc })
+          local map = function(keys, func)
+            vim.keymap.set("n", keys, func, { buffer = bufnr })
           end
-
-          map("gd", vim.lsp.buf.definition, "Goto Definition")
-          map("gr", vim.lsp.buf.references, "Goto References")
-          map("gI", vim.lsp.buf.implementation, "Goto Implementation")
-          map("gy", vim.lsp.buf.type_definition, "Type Definition")
-          map("K", vim.lsp.buf.hover, "Hover Documentation")
-          map("gK", vim.lsp.buf.signature_help, "Signature Help")
-          map("<leader>ca", vim.lsp.buf.code_action, "Code Action")
-          map("<leader>cr", vim.lsp.buf.rename, "Rename")
-          map("[d", vim.diagnostic.goto_prev, "Previous Diagnostic")
-          map("]d", vim.diagnostic.goto_next, "Next Diagnostic")
+          map("gd", vim.lsp.buf.definition)
+          map("gr", vim.lsp.buf.references)
+          map("K", vim.lsp.buf.hover)
+          map("<leader>ca", vim.lsp.buf.code_action)
+          map("<leader>cr", vim.lsp.buf.rename)
+          map("[d", vim.diagnostic.goto_prev)
+          map("]d", vim.diagnostic.goto_next)
         end,
       })
-
-      -- Servers to install and configure
       local servers = {
         lua_ls = {
           settings = {
             Lua = {
               workspace = { checkThirdParty = false },
               telemetry = { enable = false },
-              diagnostics = {
-                globals = { "vim" },
-              },
+              diagnostics = { globals = { "vim" } },
             },
           },
         },
         pyright = {},
         rust_analyzer = {},
       }
-
       require("mason-lspconfig").setup({
         ensure_installed = vim.tbl_keys(servers),
         handlers = {
@@ -119,16 +87,11 @@ return {
       })
     end,
   },
-
-  -- lazydev.nvim for Neovim Lua API
   {
     "folke/lazydev.nvim",
     ft = "lua",
     opts = {
-      library = {
-        { path = "luvit-meta/library", words = { "vim%.uv" } },
-      },
+      library = { { path = "luvit-meta/library", words = { "vim%.uv" } } },
     },
   },
-  { "Bilal2453/luvit-meta", lazy = true },
 }
