@@ -88,6 +88,20 @@ return {
     end,
   },
   {
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    dependencies = { "williamboman/mason.nvim" },
+    opts = {
+      ensure_installed = {
+        "stylua",
+        "isort",
+        "black",
+        "prettierd",
+        "selene",
+        "pylint",
+      },
+    },
+  },
+  {
     "folke/lazydev.nvim",
     ft = "lua",
     opts = {

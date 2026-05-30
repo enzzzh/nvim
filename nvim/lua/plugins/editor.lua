@@ -1,72 +1,63 @@
 return {
-  {
-    "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
-    opts = {
-      ensure_installed = { "lua", "python", "rust", "javascript", "typescript", "vim", "vimdoc", "query", "bash", "html", "css" },
-      highlight = { enable = true },
-      indent = { enable = true },
+    {
+        "nvim-treesitter/nvim-treesitter",
+        build = ":TSUpdate",
+        opts = {
+            ensure_installed = {},
+            highlight = { enable = true },
+            indent = { enable = true },
+        },
     },
-  },
-  {
-    "theprimeagen/harpoon",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    config = function()
-      local mark = require("harpoon.mark")
-      local ui = require("harpoon.ui")
-      vim.keymap.set("n", "<leader>a", mark.add_file)
-      vim.keymap.set("n", "<leader>h", ui.toggle_quick_menu)
-    end,
-  },
-  {
-    "mbbill/undotree",
-    config = function()
-      vim.keymap.set("n", "<leader>u", vim.cmd.UndoTreeToggle)
-    end,
-  },
-  { "numToStr/Comment.nvim", opts = {} },
-  {
-    "windwp/nvim-autopairs",
-    event = "InsertEnter",
-    opts = {
-      check_ts = true,
-      disable_filetype = { "TelescopePrompt", "vim" },
+    {
+        "theprimeagen/harpoon",
+        dependencies = { "nvim-lua/plenary.nvim" },
+        config = function()
+            local mark = require("harpoon.mark")
+            local ui = require("harpoon.ui")
+            vim.keymap.set("n", "<leader>a", mark.add_file)
+            vim.keymap.set("n", "<leader>h", ui.toggle_quick_menu)
+        end,
     },
-  },
-  {
-    "stevearc/conform.nvim",
-    event = "BufWritePre",
-    opts = {
-      formatters_by_ft = {
-        lua = { "stylua" },
-        python = { "isort", "black" },
-        rust = { "rustfmt" },
-        javascript = { "prettierd", "prettier", stop_after_first = true },
-      },
-      format_on_save = { timeout_ms = 500, lsp_fallback = true },
+    {
+        "mbbill/undotree",
+        config = function()
+            vim.keymap.set("n", "<leader>u", vim.cmd.UndoTreeToggle)
+        end,
     },
-  },
-  {
-    "mfussenegger/nvim-lint",
-    event = { "BufReadPost", "BufNewFile" },
-    config = function()
-      local lint = require("lint")
-      lint.linters_by_ft = {
-        lua = { "luacheck" },
-        python = { "pylint" },
-      }
-      vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
-        callback = function() lint.try_lint() end,
-      })
-    end,
-  },
-  { "kylechui/nvim-surround", version = "*", event = "VeryLazy", opts = {} },
-  {
-    "aurum77/live-server.nvim",
-    cmd = { "LiveServerStart", "LiveServerStop" },
-    keys = {
-      { "<leader>ls", ":LiveServerStart<CR>" },
-      { "<leader>lS", ":LiveServerStop<CR>" },
+    { "numToStr/Comment.nvim", opts = {} },
+    {
+        "windwp/nvim-autopairs",
+        event = "InsertEnter",
+        opts = {
+            check_ts = true,
+            disable_filetype = { "TelescopePrompt", "vim" },
+        },
     },
-  },
+    {
+        "stevearc/conform.nvim",
+        event = "BufWritePre",
+        opts = {
+            formatters_by_ft = {
+                lua = { "stylua" },
+                python = { "isort", "black" },
+                rust = { "rustfmt" },
+                javascript = { "prettierd", "prettier", stop_after_first = true },
+            },
+            format_on_save = { timeout_ms = 500, lsp_fallback = true },
+        },
+    },
+    {
+        "mfussenegger/nvim-lint",
+        event = { "BufReadPost", "BufNewFile" },
+        config = function()
+            local lint = require("lint")
+            lint.linters_by_ft = {
+                lua = { "selene" },
+                python = { "pylint" },
+            }
+            vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
+                callback = function() lint.try_lint() end,
+            })
+        end,
+    },
 }
