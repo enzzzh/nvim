@@ -19,7 +19,7 @@ require("lazy").setup({
         lazy = false,
         version = false,
     },
-    install = { colorscheme = { "lackluster" } },
+    install = { colorscheme = { "vim" } },
     checker = { enabled = false },
     performance = {
         rtp = {

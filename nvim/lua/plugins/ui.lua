@@ -108,4 +108,19 @@ return {
         end,
     },
     { "echasnovski/mini.icons", version = "*" },
+    {
+        "MeanderingProgrammer/render-markdown.nvim",
+        dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.icons" },
+        opts = {
+            heading = {
+                sign = true,
+                icons = { "󰉫 ", "󰉬 ", "󰉭 ", "󰉮 ", "󰉯 ", "󰉰 " },
+            },
+            code = {
+                sign = false,
+                width = "block",
+                right_pad = 4,
+            },
+        },
+    },
 }
