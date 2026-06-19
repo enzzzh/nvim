@@ -25,5 +25,3 @@ opt.showmode = false
 opt.cursorline = true
 opt.fillchars = { eob = " " }
 opt.shortmess:append("Ic")
-
--- vim.cmd.colorscheme("vim")
