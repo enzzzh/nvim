@@ -30,6 +30,8 @@ Now clone the config to your nvim config
 sudo npm install -g live-server
 git clone --depth 1 https://github.com/enzzzh/nvim.git
 cd nvim
+sudo pacman -S luarocks
+sudo luarocks install luacheck
 sudo cp -r nvim ~/.config
 rm -fr .git
 nvim
