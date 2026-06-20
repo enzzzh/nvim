@@ -5,6 +5,8 @@ local map = vim.keymap.set
 map("n", "<leader>w", ":w<CR>")
 map("n", "<leader>q", ":q<CR>")
 map("n", "<leader>h", ":nohlsearch<CR>")
+map("n", "<C-l>", ":tabn<CR>")
+map("n", "<C-h>", ":tabp<CR>")
 
 map("n", "<C-d>", "<C-d>zz")
 map("n", "<C-u>", "<C-u>zz")
