@@ -9,41 +9,11 @@ return {
 		},
 	},
 	{
-		"nvim-tree/nvim-tree.lua",
-		version = "*",
-		dependencies = { "nvim-tree/nvim-web-devicons" },
-		config = function()
-			require("nvim-tree").setup({
-				sort_by = "case_sensitive",
-				view = {
-					width = 30,
-					side = "left",
-				},
-				renderer = {
-					group_empty = true,
-					icons = {
-						show = {
-							git = true,
-							file = true,
-							folder = true,
-						},
-					},
-				},
-				filters = {
-					dotfiles = false,
-				},
-			})
-			vim.keymap.set("n", "<leader>e", ":NvimTreeToggle<CR>", { silent = true })
-		end,
-	},
-	{
-		"folke/todo-comments.nvim",
-		dependencies = { "nvim-lua/plenary.nvim" },
+		"stevearc/oil.nvim",
+		---@module 'oil'
+		---@type oil.SetupOpts
 		opts = {},
-		config = function()
-			require("todo-comments").setup({})
-			vim.keymap.set("n", "<leader>t", ":TodoTelescope<CR>", { silent = true })
-		end,
+		dependencies = { "nvim-tree/nvim-web-devicons" }, -- or "echasnovski/mini.icons"
 	},
 	{
 		"theprimeagen/harpoon",
@@ -58,7 +28,6 @@ return {
 	{
 		"mbbill/undotree",
 		config = function()
-			-- Wrap the command in a clean function block to prevent early execution errors
 			vim.keymap.set("n", "<leader>u", function()
 				vim.cmd("UndotreeToggle")
 			end, { desc = "Toggle UndoTree Window" })
@@ -74,39 +43,9 @@ return {
 		end,
 	},
 	{
-		"sphamba/smear-cursor.nvim",
-		opts = {
-			smear_between_buffers = true,
-			stiffness = 0.6,
-		},
-	},
-	{
-		"stevearc/conform.nvim",
-		event = "BufWritePre",
-		opts = {
-			formatters_by_ft = {
-				lua = { "stylua" },
-				python = { "isort", "black" },
-				rust = { "rustfmt" },
-				javascript = { "prettierd", "prettier", stop_after_first = true },
-			},
-			format_on_save = { timeout_ms = 500, lsp_fallback = true },
-		},
-	},
-	{
-		"NeogitOrg/neogit",
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-			"sindrets/diffview.nvim", -- Required for interactive split diff layouts
-			"nvim-telescope/telescope.nvim",
-		},
-		config = function()
-			require("neogit").setup({
-				kind = "split", -- Opens up like a VS Code split drawer
-			})
-			-- Keymap: Press Space + g to open the full Git control center
-			vim.keymap.set("n", "<leader>g", "<cmd>Neogit<cr>", { silent = true })
-		end,
+		"nvim-telescope/telescope.nvim",
+		branch = "master",
+		dependencies = { "nvim-lua/plenary.nvim" },
 	},
 	{
 		"mfussenegger/nvim-lint",
@@ -123,5 +62,44 @@ return {
 				end,
 			})
 		end,
+	},
+	{
+		"MeanderingProgrammer/render-markdown.nvim",
+		opts = {},
+		ft = { "markdown" },
+		dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
+	},
+	{
+		"iamcco/markdown-preview.nvim",
+		cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+		build = "cd app && npm install",
+		init = function()
+			vim.g.mkdp_filetypes = { "markdown" }
+		end,
+		ft = { "markdown" },
+		config = function()
+			vim.keymap.set(
+				"n",
+				"<leader>mp",
+				"<cmd>MarkdownPreviewToggle<cr>",
+				{ silent = true, desc = "Markdown Preview Toggle" }
+			)
+		end,
+	},
+	{
+		"kdheepak/lazygit.nvim",
+		cmd = {
+			"LazyGit",
+			"LazyGitConfig",
+			"LazyGitCurrentFile",
+			"LazyGitFilter",
+			"LazyGitFilterCurrentFile",
+		},
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+		},
+		keys = {
+			{ "<leader>lg", "<cmd>LazyGit<cr>", desc = "Open LazyGit" },
+		},
 	},
 }
