@@ -18,4 +18,3 @@ map("v", "K", ":m '<-2<CR>gv=gv")
 map("v", "<", "<gv")
 map("v", ">", ">gv")
 
-map("n", "<leader>e", ":Oil<CR>")
