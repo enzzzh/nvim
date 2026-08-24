@@ -3,34 +3,77 @@ return {
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
 		opts = {
-			ensure_installed = {"lua", "vim", "bash", "c", "python", "rust", "css", "javascript"},
+			ensure_installed = {
+				"lua",
+				"vim",
+				"bash",
+				"c",
+				"python",
+				"rust",
+				"css",
+				"javascript",
+				"markdown",
+				"markdown_inline",
+				"latex",
+			},
 			highlight = { enable = true },
 			indent = { enable = true },
+		},
+	},
+	{
+		"nvim-treesitter/nvim-treesitter",
+		build = ":TSUpdate",
+		config = function()
+			vim.api.nvim_create_autocmd("FileType", {
+				pattern = "markdown",
+				callback = function(args)
+					pcall(vim.treesitter.start, args.buf, "markdown")
+				end,
+			})
+		end,
+	},
+	{
+		"3rd/image.nvim",
+		build = false,
+		opts = {
+			backend = "kitty",
+			processor = "magick_cli",
+			max_width = 100,
+			max_height = 12,
+			filetypes = { "markdown" },
+		},
+	},
+	{
+		'MeanderingProgrammer/render-markdown.nvim',
+		dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
+		ft = { 'markdown' },
+		opts = {
+			file_types = { 'markdown' },
+			render_modes = { 'n', 'c', 't' },
+			latex = {
+				enabled = true,
+				converter = 'latex2text',
+				highlight = 'RenderMarkdownMath',
+			},
+			on = {
+				attach = function()
+					vim.opt_local.conceallevel = 2
+				end,
+			},
 		},
 	},
 	{
 		"windwp/nvim-autopairs",
 		event = "InsertEnter",
 		config = function()
-			require("nvim-autopairs").setup({
-				enable_moveright = true,
-
-				enable_afterquote = true,
-				enable_check_bracket_line = true,
-			})
+			require("nvim-autopairs").setup({})
 		end,
 	},
-		{
+	{
 		"NeogitOrg/neogit",
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-			"sindrets/diffview.nvim", 
-			"nvim-telescope/telescope.nvim",
-		},
+		dependencies = { "nvim-lua/plenary.nvim", "sindrets/diffview.nvim", "nvim-telescope/telescope.nvim" },
 		config = function()
-			require("neogit").setup({
-				kind = "split", 
-			})
+			require("neogit").setup({ kind = "split" })
 			vim.keymap.set("n", "<leader>g", "<cmd>Neogit<cr>", { silent = true })
 		end,
 	},
@@ -42,44 +85,20 @@ return {
 				lua = { "stylua" },
 				python = { "isort", "black" },
 				rust = { "rustfmt" },
-				javascript = { "prettierd", "prettier", stop_after_first = true },
 			},
 			format_on_save = { timeout_ms = 500, lsp_fallback = true },
 		},
 	},
-		{
+	{
 		"sphamba/smear-cursor.nvim",
-		opts = {
-			smear_between_buffers = true,
-			stiffness = 0.45,
-		},
+		opts = { smear_between_buffers = true, stiffness = 0.45 },
 	},
-
 	{
 		"nvim-tree/nvim-tree.lua",
 		version = "*",
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 		config = function()
-			require("nvim-tree").setup({
-				sort_by = "case_sensitive",
-				view = {
-					width = 30,
-					side = "left",
-				},
-				renderer = {
-					group_empty = true,
-					icons = {
-						show = {
-							git = true,
-							file = true,
-							folder = true,
-						},
-					},
-				},
-				filters = {
-					dotfiles = false,
-				},
-			})
+			require("nvim-tree").setup()
 			vim.keymap.set("n", "<leader>e", ":NvimTreeToggle<CR>", { silent = true })
 		end,
 	},
@@ -87,27 +106,17 @@ return {
 		"folke/todo-comments.nvim",
 		dependencies = { "nvim-lua/plenary.nvim" },
 		opts = {},
-		config = function()
-			require("todo-comments").setup({})
-			vim.keymap.set("n", "<leader>t", ":TodoTelescope<CR>", { silent = true })
-		end,
 	},
 	{
 		"mbbill/undotree",
 		config = function()
-			vim.keymap.set("n", "<leader>u", function()
-				vim.cmd("UndotreeToggle")
-			end, { desc = "Toggle UndoTree Window" })
+			vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle)
 		end,
 	},
 	{
 		"folke/trouble.nvim",
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 		opts = {},
-		config = function()
-			require("trouble").setup({})
-			vim.keymap.set("n", "<leader>x", "<cmd>Trouble diagnostics toggle<cr>", { silent = true })
-		end,
 	},
 	{
 		"theprimeagen/harpoon",
