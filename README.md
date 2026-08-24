@@ -22,7 +22,7 @@ I might add some new plugins in the future
 First, let's back up your old configs : 
 ```bash
 sudo mv ~/.config/nvim ~/Documents/nvim_config_if_anything_goes_wrong
-sudo pacman -S git gcc base-devel tree-sitter-cli python-pipx luarocks
+sudo pacman -S git lazygit gcc base-devel tree-sitter-cli python-pipx luarocks
 ```
 Install packer.nvim to your system : 
 
@@ -32,7 +32,6 @@ git clone --depth 1 https://github.com/enzzzh/nvim.git
 cd nvim
 pipx install pylatexenc
 pipx ensurepath
-sudo pacman -S luarocks
 pipx install 
 sudo luarocks install luacheck
 sudo cp -r nvim ~/.config

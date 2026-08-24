@@ -70,12 +70,21 @@ return {
 		end,
 	},
 	{
-		"NeogitOrg/neogit",
-		dependencies = { "nvim-lua/plenary.nvim", "sindrets/diffview.nvim", "nvim-telescope/telescope.nvim" },
-		config = function()
-			require("neogit").setup({ kind = "split" })
-			vim.keymap.set("n", "<leader>g", "<cmd>Neogit<cr>", { silent = true })
-		end,
+		"kdheepak/lazygit.nvim",
+		lazy = true,
+		cmd = {
+			"LazyGit",
+			"LazyGitConfig",
+			"LazyGitCurrentFile",
+			"LazyGitFilter",
+			"LazyGitFilterCurrentFile",
+		},
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+		},
+		keys = {
+			{ "<leader>lg", "<cmd>LazyGit<cr>", desc = "LazyGit" }
+		}
 	},
 	{
 		"stevearc/conform.nvim",
