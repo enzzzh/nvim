@@ -141,6 +141,44 @@ return {
 		"nvim-telescope/telescope.nvim",
 		branch = "master",
 		dependencies = { "nvim-lua/plenary.nvim" },
+		keys = {
+			{ "<leader>ff", function() require("telescope.builtin").find_files() end, desc = "Find files" },
+			{ "<leader>fg", function() require("telescope.builtin").live_grep() end, desc = "Live grep" },
+			{ "<leader>fb", function() require("telescope.builtin").buffers() end, desc = "Find buffers" },
+			{ "<leader>fh", function() require("telescope.builtin").help_tags() end, desc = "Help tags" },
+			{ "<leader>fo", function() require("telescope.builtin").oldfiles() end, desc = "Recent files" },
+			{ "<leader>fr", function() require("telescope.builtin").resume() end, desc = "Resume last picker" },
+			{ "<leader>fk", function() require("telescope.builtin").keymaps() end, desc = "Find keymaps" },
+			{ "<leader>fc", function() require("telescope.builtin").commands() end, desc = "Find commands" },
+			{ "<leader>fd", function() require("telescope.builtin").diagnostics() end, desc = "Find diagnostics" },
+			{
+				"<leader>fD",
+				function()
+					local actions = require("telescope.actions")
+					local action_state = require("telescope.actions.state")
+					local function cd_to_selected(prompt_bufnr)
+						local entry = action_state.get_selected_entry()
+						actions.close(prompt_bufnr)
+						-- ponytail: assumes fd installed, falls back to find_files default
+						local dir = entry and (entry.path or entry.value or entry[1])
+						if dir and dir ~= "" then
+							vim.cmd.cd(vim.fn.fnameescape(dir))
+							print("cd " .. vim.fn.getcwd())
+						end
+					end
+					require("telescope.builtin").find_files({
+						find_command = { "fd", "--type", "d", "--hidden", "--exclude", ".git" },
+						prompt_title = "Find directory and cd",
+						attach_mappings = function(_, map)
+							map("i", "<CR>", cd_to_selected)
+							map("n", "<CR>", cd_to_selected)
+							return true
+						end,
+					})
+				end,
+				desc = "Find directory and cd",
+			},
+		},
 	},
 	{
 		"mfussenegger/nvim-lint",

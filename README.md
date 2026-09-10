@@ -22,7 +22,7 @@ I might add some new plugins in the future
 First, let's back up your old configs : 
 ```bash
 sudo mv ~/.config/nvim ~/Documents/nvim_config_if_anything_goes_wrong
-sudo pacman -S git lazygit gcc base-devel tree-sitter-cli python-pipx luarocks
+sudo pacman -S git lazygit gcc base-devel tree-sitter-cli ripgrep python-pipx luarocks
 ```
 Install packer.nvim to your system : 
 
@@ -37,6 +37,7 @@ sudo luarocks install luacheck
 sudo cp -r nvim ~/.config
 rm -fr .git
 nvim
+:TSInstall markdown latex
 ```
 After this you should be in the neovim config. 
 When you are in nvim, Type 
