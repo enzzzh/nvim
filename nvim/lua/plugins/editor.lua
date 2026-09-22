@@ -1,4 +1,5 @@
 return {
+	-- Treesitter (Combined into a single clean spec)
 	{
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
@@ -6,62 +7,52 @@ return {
 			ensure_installed = {
 				"lua",
 				"vim",
+				"vimdoc",
 				"bash",
 				"c",
 				"python",
 				"rust",
-				"css",
-				"javascript",
-				"markdown",
-				"markdown_inline",
 				"latex",
+				"bibtex",
 			},
 			highlight = { enable = true },
 			indent = { enable = true },
 		},
 	},
+
+	-- Vimwiki
 	{
-		"nvim-treesitter/nvim-treesitter",
-		build = ":TSUpdate",
+		"vimwiki/vimwiki",
+		event = "VimEnter",
+		init = function()
+			vim.g.vimwiki_list = {
+				{
+					path = "~/vimwiki/",
+					syntax = "default",
+					ext = ".wiki",
+				},
+			}
+			vim.g.vimwiki_global_ext = 0
+		end,
+		keys = {
+			{ "<leader>ww", "<cmd>VimwikiIndex<cr>", desc = "Vimwiki Index" },
+			{ "<leader>w<leader>w", "<cmd>VimwikiMakeDiaryNote<cr>", desc = "Vimwiki Diary" },
+		},
+	},
+
+	-- Netrw setup (Native file explorer replacing NvimTree)
+	{
+		"nvim-lua/plenary.nvim", -- dummy wrapper to load netrw keymap & options cleanly
+		lazy = false,
+		priority = 1000,
 		config = function()
-			vim.api.nvim_create_autocmd("FileType", {
-				pattern = "markdown",
-				callback = function(args)
-					pcall(vim.treesitter.start, args.buf, "markdown")
-				end,
-			})
+			vim.g.netrw_banner = 0
+			vim.g.netrw_winsize = 25
+			vim.keymap.set("n", "<leader>e", "<cmd>Explore<CR>", { silent = true, desc = "Toggle Netrw" })
 		end,
 	},
-	{
-		"3rd/image.nvim",
-		build = false,
-		opts = {
-			backend = "kitty",
-			processor = "magick_cli",
-			max_width = 100,
-			max_height = 12,
-			filetypes = { "markdown" },
-		},
-	},
-	{
-		'MeanderingProgrammer/render-markdown.nvim',
-		dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
-		ft = { 'markdown' },
-		opts = {
-			file_types = { 'markdown' },
-			render_modes = { 'n', 'c', 't' },
-			latex = {
-				enabled = true,
-				converter = 'latex2text',
-				highlight = 'RenderMarkdownMath',
-			},
-			on = {
-				attach = function()
-					vim.opt_local.conceallevel = 2
-				end,
-			},
-		},
-	},
+
+	-- Autopairs
 	{
 		"windwp/nvim-autopairs",
 		event = "InsertEnter",
@@ -69,6 +60,8 @@ return {
 			require("nvim-autopairs").setup({})
 		end,
 	},
+
+	-- LazyGit
 	{
 		"kdheepak/lazygit.nvim",
 		lazy = true,
@@ -79,13 +72,13 @@ return {
 			"LazyGitFilter",
 			"LazyGitFilterCurrentFile",
 		},
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-		},
+		dependencies = { "nvim-lua/plenary.nvim" },
 		keys = {
-			{ "<leader>lg", "<cmd>LazyGit<cr>", desc = "LazyGit" }
-		}
+			{ "<leader>lg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
+		},
 	},
+
+	-- Conform (Formatting)
 	{
 		"stevearc/conform.nvim",
 		event = "BufWritePre",
@@ -94,39 +87,34 @@ return {
 				lua = { "stylua" },
 				python = { "isort", "black" },
 				rust = { "rustfmt" },
+				tex = { "latexindent" },
 			},
 			format_on_save = { timeout_ms = 500, lsp_fallback = true },
 		},
 	},
-	{
-		"sphamba/smear-cursor.nvim",
-		opts = { smear_between_buffers = true, stiffness = 0.45 },
-	},
-	{
-		"nvim-tree/nvim-tree.lua",
-		version = "*",
-		dependencies = { "nvim-tree/nvim-web-devicons" },
-		config = function()
-			require("nvim-tree").setup()
-			vim.keymap.set("n", "<leader>e", ":NvimTreeToggle<CR>", { silent = true })
-		end,
-	},
+
+	-- Todo Comments
 	{
 		"folke/todo-comments.nvim",
 		dependencies = { "nvim-lua/plenary.nvim" },
 		opts = {},
 	},
+
+	-- Undotree
 	{
 		"mbbill/undotree",
 		config = function()
 			vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle)
 		end,
 	},
+
+	-- Trouble
 	{
 		"folke/trouble.nvim",
-		dependencies = { "nvim-tree/nvim-web-devicons" },
 		opts = {},
 	},
+
+	-- Harpoon
 	{
 		"theprimeagen/harpoon",
 		dependencies = { "nvim-lua/plenary.nvim" },
@@ -137,6 +125,8 @@ return {
 			vim.keymap.set("n", "<leader>h", ui.toggle_quick_menu)
 		end,
 	},
+
+	-- Telescope
 	{
 		"nvim-telescope/telescope.nvim",
 		branch = "master",
@@ -151,19 +141,7 @@ return {
 			{ "<leader>fk", function() require("telescope.builtin").keymaps() end, desc = "Find keymaps" },
 			{ "<leader>fc", function() require("telescope.builtin").commands() end, desc = "Find commands" },
 			{ "<leader>fd", function() require("telescope.builtin").diagnostics() end, desc = "Find diagnostics" },
-			{
-				"<leader>fD",
-				function()
-					local actions = require("telescope.actions")
-					local action_state = require("telescope.actions.state")
-					local function cd_to_selected(prompt_bufnr)
-						local entry = action_state.get_selected_entry()
-						actions.close(prompt_bufnr)
-						-- ponytail: assumes fd installed, falls back to find_files default
-						local dir = entry and (entry.path or entry.value or entry[1])
-						if dir and dir ~= "" then
-							vim.cmd.cd(vim.fn.fnameescape(dir))
-							print("cd " .. vim.fn.getcwd())
+			cd " .. vim.fn.getcwd())
 						end
 					end
 					require("telescope.builtin").find_files({
@@ -180,6 +158,8 @@ return {
 			},
 		},
 	},
+
+	-- Linter
 	{
 		"mfussenegger/nvim-lint",
 		event = { "BufReadPost", "BufNewFile" },
