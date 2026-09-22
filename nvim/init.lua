@@ -4,7 +4,7 @@ require("config.lazy")
 vim.wo.relativenumber = not vim.wo.relativenumber
 vim.opt.signcolumn = "no"
 vim.env.PATH = vim.fn.expand("~/.local/bin") .. ":" .. vim.env.PATH
-vim.cmd.colorscheme("lunaperche")
+vim.cmd.colorscheme("vim")
 -- Netrw Configuration (Native File Explorer)
 vim.g.netrw_banner = 0
 vim.g.netrw_winsize = 25
